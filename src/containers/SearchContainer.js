@@ -6,7 +6,19 @@ import MenuItem from '@material-ui/core/MenuItem'
 import FormControl from '@material-ui/core/FormControl'
 import Select from '@material-ui/core/Select'
 
+import AppBar from '@material-ui/core/AppBar';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
+import Typography from '@material-ui/core/Typography';
+import Box from '@material-ui/core/Box';
+
 import { makeStyles } from '@material-ui/core/styles'
+
+import ResultsContainer from './ResultsContainer'
+import MoviesContainer from './MoviesContainer'
+import TvShowsContainer from './TvShowsContainer'
+
+
 const getStyles = makeStyles(theme => ({
     button: {
         margin: theme.spacing(1)
@@ -31,49 +43,113 @@ const getStyles = makeStyles(theme => ({
 }))
 
 
+// Material UI ********************************
+function TabPanel(props) {
+    const { children, value, index } = props;
+
+    return (
+        <div
+            role="tabpanel"
+            hidden={value !== index}
+            id={`simple-tabpanel-${index}`}
+            aria-labelledby={`simple-tab-${index}`}
+        >
+
+            {value === index && index === 0 && (
+                <Box p={3}>
+                    <Typography>{children}</Typography>
+                    <MoviesContainer />
+                </Box>
+            )}
+
+            {value === index && index === 1 && (
+                <Box p={3}>
+                    <Typography>{children}</Typography>
+                    <ResultsContainer />
+                </Box>
+            )}
+
+            {value === index && index === 2 && (
+                <Box p={3}>
+                    <Typography>{children}</Typography>
+                    <TvShowsContainer />
+                </Box>
+            )}
+
+        </div>
+    );
+}
+// Material UI - end  ********************************
+
+
+
 
 const SearchContainer = props => {
     const classes = getStyles()
     const [type, setType] = React.useState('');
 
+    const [tabPage, setTabPage] = React.useState(0);
+
+    const tabChange = (e, val) => {
+        setTabPage(val);
+    }
+
     const handleChange = (event) => {
-      setType(event.target.value);
-    };   
+        setType(event.target.value);
+    };
 
     return (
-        <form className={classes.form}  >
-            <TextField
-                label='Search'
-                name='searchText'
-                margin='normal'
-                variant='outlined'
-            />
+        <div>
+            <form className={classes.form}  >
+                <TextField
+                    label='Search'
+                    name='searchText'
+                    margin='normal'
+                    variant='outlined'
+                />
 
-             <FormControl className={classes.formControl}>
-                <InputLabel shrink id="search-label">Search Type</InputLabel>
-                <Select
-                    labelId="search-label"
-                    id="search-id"
-                    value={type}
-                    onChange={handleChange}
-                    displayEmpty
-                    className={classes.selectEmpty}
-                >
-                    <MenuItem value=""><em>None</em></MenuItem>
-                    <MenuItem value={1}>Movie</MenuItem>
-                    <MenuItem value={2}>TV Show</MenuItem>
-                </Select>
-            </FormControl>
+                <FormControl className={classes.formControl}>
+                    <InputLabel shrink id="search-label">Search Type</InputLabel>
+                    <Select
+                        labelId="search-label"
+                        id="search-id"
+                        value={type}
+                        onChange={handleChange}
+                        displayEmpty
+                        className={classes.selectEmpty}
+                    >
+                        <MenuItem value=""><em>None</em></MenuItem>
+                        <MenuItem value={1}>Movie</MenuItem>
+                        <MenuItem value={2}>TV Show</MenuItem>
+                    </Select>
+                </FormControl>
 
-            <Button variant='outlined' className={classes.button} type='submit'>
-                Search
-            </Button>
+                <Button variant='outlined' className={classes.button} type='submit'>
+                    Search
+                </Button>
+            </form>
 
-        </form>
+            <div className={classes.root}>
+                <AppBar position="static">
+                    <Tabs value={tabPage} onChange={tabChange} aria-label="simple tabs example">
+                        <Tab label="MOVIES" />
+                        <Tab label="SEARCH RESULTS"  />
+                        <Tab label="TV SHOWS" />
+                    </Tabs>
+                </AppBar>
 
+                <TabPanel value={tabPage} index={0}>MOVIES</TabPanel>
+                <TabPanel value={tabPage} index={1}>SEARCH RESULTS</TabPanel>
+                <TabPanel value={tabPage} index={2}>TV SHOWS</TabPanel>
+            </div>
+        </div>
     )
-
 
 }
 
 export default SearchContainer
+
+
+
+
+
