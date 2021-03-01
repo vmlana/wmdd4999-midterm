@@ -21,7 +21,7 @@ const Movies = props => {
                         <Grid item xs={4}>
                             <MovieCard
                                 key={movieObj.id}
-                                title={movieObj.title}
+                                title={movieObj.title ? movieObj.title : movieObj.name }
                                 subheader={`Release date: ${movieObj.release_date} | Popularity: ${movieObj.popularity}`}
                                 overview={movieObj.overview}
                                 imageUrl= {`${props.movieConfig.images.secure_base_url}original/${movieObj.poster_path}`}

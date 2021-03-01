@@ -3,21 +3,26 @@ import { Component } from 'react';
 import Loading from '../components/Loading'
 import Movies from '../components/Movies'
 import { getMovies, getConfig } from '../services/api'
-import Button from '@material-ui/core/Button'
+
+import InputLabel from '@material-ui/core/InputLabel'
+import MenuItem from '@material-ui/core/MenuItem'
+import FormControl from '@material-ui/core/FormControl'
+import Select from '@material-ui/core/Select'
+
 
 class MoviesContainer extends Component {
 
     state = {
-        recipesName: '',
+        category: '',
         movieConfig: {},
         movies: [],
         isLoading: false
     }
 
-
     fetchMovies = e => {
-        const { recipeName } = this.state
         e.preventDefault()
+        const category = e.target.value
+        const origin = 'movie'
 
         this.setState({
             isLoading: true
@@ -29,7 +34,7 @@ class MoviesContainer extends Component {
             })
         })
 
-        getMovies(recipeName).then(movies => {
+        getMovies(origin, category).then(movies => {
             this.setState({
                 movies,
                 isLoading: false
@@ -37,22 +42,42 @@ class MoviesContainer extends Component {
         })
     }
 
+
+    handleChange = (event) => {
+        event.preventDefault()
+        this.setState({
+            category: event.target.value
+        })
+        this.fetchMovies(event)
+    };
+
     render() {
-        const { isLoading, movies, movieConfig } = this.state
+        const { isLoading, movies, movieConfig, category } = this.state
         return (
             <div>
                 <h1>THIS IS THE MOVIES CONTAINER</h1>
-
-                <form onSubmit={this.fetchMovies} className='test'>
-                    <Button variant='outlined' type='submit'>VINI</Button>
+                <form  >
+                    <FormControl >
+                        <InputLabel shrink id="category-label">Category</InputLabel>
+                        <Select
+                            labelId="category-label"
+                            id="category-id"
+                            value={category}
+                            onChange={this.handleChange}
+                            displayEmpty
+                        >
+                            <MenuItem value=""><em>Now Playing</em></MenuItem>
+                            <MenuItem value={1}>Popular</MenuItem>
+                            <MenuItem value={2}>Top-Rated</MenuItem>
+                            <MenuItem value={3}>Upcomming</MenuItem>
+                        </Select>
+                    </FormControl>
                 </form>
-
 
                 {isLoading ? <Loading /> : <Movies movieConfig={movieConfig} movies={movies} />}
             </div>
         )
     }
-
 }
 
 export default MoviesContainer

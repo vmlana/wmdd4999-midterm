@@ -17,6 +17,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import ResultsContainer from './ResultsContainer'
 import MoviesContainer from './MoviesContainer'
 import TvShowsContainer from './TvShowsContainer'
+import { getMovies, getConfig } from '../services/api'
 
 
 const getStyles = makeStyles(theme => ({
@@ -45,7 +46,7 @@ const getStyles = makeStyles(theme => ({
 
 // Material UI ********************************
 function TabPanel(props) {
-    const { children, value, index } = props;
+    const { children, value, index, keyword, movies, movieConfig } = props;
 
     return (
         <div
@@ -65,7 +66,7 @@ function TabPanel(props) {
             {value === index && index === 1 && (
                 <Box p={3}>
                     <Typography>{children}</Typography>
-                    <ResultsContainer />
+                    <ResultsContainer keyword={keyword} movies={movies} movieConfig={movieConfig} />
                 </Box>
             )}
 
@@ -82,15 +83,17 @@ function TabPanel(props) {
 // Material UI - end  ********************************
 
 
-
-
 const SearchContainer = props => {
     const classes = getStyles()
-    const [type, setType] = React.useState('');
+    const [type, setType] = React.useState('')
+    const [tabPage, setTabPage] = React.useState(0)
+    const [keyword, setKeyword] = React.useState('')    
+    const [movies, setMovies] = React.useState([])
+    const [movieConfig, setMovieConfig] = React.useState([])
 
-    const [tabPage, setTabPage] = React.useState(0);
 
     const tabChange = (e, val) => {
+        e.preventDefault()
         setTabPage(val);
     }
 
@@ -98,12 +101,31 @@ const SearchContainer = props => {
         setType(event.target.value);
     };
 
+
+    const fetchMovies = (e) => {
+        e.preventDefault()
+
+        const { searchKeyword } = e.target.elements  
+
+        setKeyword(searchKeyword.value);
+        setTabPage(1);
+
+        getConfig().then(myConfig => {
+            setMovieConfig(myConfig)
+        })
+
+        getMovies('search', type, searchKeyword.value).then(myMovies => {
+            setMovies(myMovies)
+        })
+    }
+
+
     return (
         <div>
-            <form className={classes.form}  >
+            <form onSubmit={fetchMovies} className={classes.form}  >
                 <TextField
                     label='Search'
-                    name='searchText'
+                    name='searchKeyword'
                     margin='normal'
                     variant='outlined'
                 />
@@ -133,13 +155,13 @@ const SearchContainer = props => {
                 <AppBar position="static">
                     <Tabs value={tabPage} onChange={tabChange} aria-label="simple tabs example">
                         <Tab label="MOVIES" />
-                        <Tab label="SEARCH RESULTS"  />
+                        <Tab label="SEARCH RESULTS" />
                         <Tab label="TV SHOWS" />
                     </Tabs>
                 </AppBar>
 
                 <TabPanel value={tabPage} index={0}>MOVIES</TabPanel>
-                <TabPanel value={tabPage} index={1}>SEARCH RESULTS</TabPanel>
+                <TabPanel value={tabPage} index={1} keyword={keyword} movies={movies} movieConfig={movieConfig}>SEARCH RESULTS</TabPanel>
                 <TabPanel value={tabPage} index={2}>TV SHOWS</TabPanel>
             </div>
         </div>
