@@ -128,6 +128,7 @@ const SearchContainer = props => {
                     name='searchKeyword'
                     margin='normal'
                     variant='outlined'
+                    width='500px'
                 />
 
                 <FormControl className={classes.formControl}>

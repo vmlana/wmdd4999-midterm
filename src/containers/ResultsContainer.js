@@ -9,7 +9,7 @@ const ResultsContainer = props => {
 
     return (
         <div>
-            {(movies.length === 0 || keyword === '' ) ? <Searching /> : <Movies movieConfig={movieConfig} movies={movies} />}
+            {(movies.length === 0 || keyword === '' ) ? <Searching keyword={keyword} /> : <Movies movieConfig={movieConfig} movies={movies} />}
         </div>
     )
 }
