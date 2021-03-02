@@ -55,7 +55,6 @@ class MoviesContainer extends Component {
         const { isLoading, movies, movieConfig, category } = this.state
         return (
             <div>
-                <h1>THIS IS THE MOVIES CONTAINER</h1>
                 <form  >
                     <FormControl >
                         <InputLabel shrink id="category-label">Category</InputLabel>

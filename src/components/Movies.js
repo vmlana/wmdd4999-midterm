@@ -18,7 +18,7 @@ const Movies = props => {
 
                 {props.movies.map(movieObj => {
                     return (
-                        <Grid item xs={4}>
+                        <Grid item xs={8}>
                             <MovieCard
                                 key={movieObj.id}
                                 title={movieObj.title ? movieObj.title : movieObj.name }
